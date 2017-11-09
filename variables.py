@@ -1,0 +1,11 @@
+# Simulator
+NUM_FISH = 20
+NUM_PREDATORS = 0
+WORLD_SIZE = (100, 50)
+FREQUENCY = 60
+
+# Pygame
+SQUARE_SIZE = 15
+
+# Fish
+FISH_SPEED = 2;
