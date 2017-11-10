@@ -2,7 +2,7 @@ import random, math
 from agent import Agent
 from variables import *
 
-MAX_NEIGHBOR_FORCE = abs(math.log(0.05/FISH_DESIRED_DIST))
+MAX_NEIGHBOR_FORCE = abs(math.log(FISH_SENSING_DISTANCE/FISH_DESIRED_DIST))
 class Fish(Agent):
     def __init__(self, sim, start_loc = None):
         random.seed()
@@ -24,17 +24,24 @@ class Fish(Agent):
         total_y_vec = 0
        
         if len(self.neighbors) > 0:
-            for neighbor in self.neighbors:
+            neighbors = self.neighbors
+            if len(neighbors) > FISH_MAX_NEIGHBORS:
+                neighbors = sorted(self.neighbors, key=lambda x: x[1])
+                neighbors = neighbors[:FISH_MAX_NEIGHBORS]
+            for neighbor in neighbors:
                 x_vec = 0
                 y_vec = 0
                 fish, dist = neighbor 
                 target = self.get_perceived_target_pos(fish.loc)
                 x, y = self.get_vector_to_target(target)
-                if dist < 0.05:
-                    dist = 0.05
-                total_force = FISH_NEIGHBOR_FORCE * math.log(dist/FISH_DESIRED_DIST)/MAX_NEIGHBOR_FORCE
+                if dist > FISH_DESIRED_DIST:
+                    total_force = FISH_NEIGHBOR_FORCE * math.log(dist/FISH_DESIRED_DIST)/MAX_NEIGHBOR_FORCE
+                    #total_force =  FISH_NEIGHBOR_FORCE*(dist - FISH_DESIRED_DIST)/(FISH_SENSING_DISTANCE - FISH_DESIRED_DIST)
+                else:
+                    total_force = -pow(FISH_DESIRED_DIST-dist, 2)
                 total_x_vec += x * total_force
                 total_y_vec += y * total_force
+
 
         else:
             # randomly adjust speed
