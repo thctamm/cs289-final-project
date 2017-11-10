@@ -1,10 +1,12 @@
-import time, sys
+import time, sys, math, random
 import pygame
 from variables import *
 from fish import Fish
+from predator import Predator
 
 class Simulator():
     def __init__(self):
+        random.seed()
         self.fish = []
         self.predators = []
         self._init_fish()
@@ -18,25 +20,77 @@ class Simulator():
 
     def _init_fish(self):
         for _ in range(NUM_FISH):
-            self.fish.append(Fish())
+            if START_CLUSTERED:
+                self.fish.append(Fish(self, (WORLD_SIZE[0]/2 + (random.random()-0.5)*5, WORLD_SIZE[1]/2 + (random.random()-0.5)*5)))
+            else:
+                self.fish.append(Fish(self))
 
     def _init_predators(self):
-        # TODO
-        return
+        for _ in range(NUM_PREDATORS):
+            if START_CLUSTERED:
+                self.predators.append(Predator(self, (WORLD_SIZE[0]/2 + 10, WORLD_SIZE[1]/2)))
+            else:
+                self.predators.append(Predator(self))
 
     def _draw_fish(self, fish):
         x = int(fish.loc[0] * SQUARE_SIZE)
         y = int(fish.loc[1] * SQUARE_SIZE)
-        pygame.draw.circle(self.surface, pygame.Color(*fish.color), (x, y), int(SQUARE_SIZE/3))
+        pygame.draw.circle(self.surface, pygame.Color(*fish.color), (x, y), int(SQUARE_SIZE*FISH_SIZE))
         return
 
     def _draw_pred(self, pred):
+        x = int(pred.loc[0] * SQUARE_SIZE)
+        y = int(pred.loc[1] * SQUARE_SIZE)
+        pygame.draw.circle(self.surface, pygame.Color(*RED), (x, y), int(SQUARE_SIZE*PREDATOR_SIZE))
         return
+
+    def _calc_dist(self, a, b):
+        x = abs(a.loc[0] - b.loc[0])
+        y = abs(a.loc[1] - b.loc[1])
+
+        # Adjust for infinite world
+        if x > WORLD_SIZE[0]/2:
+            x = WORLD_SIZE[0] - x
+        if y > WORLD_SIZE[0]/2:
+            y = WORLD_SIZE[0] - y
+
+        return math.sqrt(pow(x, 2) + pow(y, 2))
+
+    def _update_agent_group_neighbors(self, group, sensing_dist):
+        if len(group) > 0:
+            group[0].neighbors = []
+            for i1 in range(len(group)):
+                for i2 in range(len(group[i1:])-1):
+                    agent_a = group[i1]
+                    agent_b = group[i1+i2+1]
+
+                    # Clear old neighbors
+                    if i1 == 0:
+                        agent_b.neighbors = []
+
+                    dist = self._calc_dist(agent_a, agent_b)
+                    if dist <= sensing_dist:
+                        agent_a.neighbors.append((agent_b, dist))
+                        agent_b.neighbors.append((agent_a, dist))
+
+    def _update_predator_nearby_fish(self):
+        for pred in self.predators:
+            pred.nearby_fish = []
+            for fish in self.fish:
+                dist = self._calc_dist(pred, fish)
+                if dist <= PREDATOR_SENSING_DISTANCE:
+                    pred.nearby_fish.append((fish, dist))
+
+    def _update_neighbors(self):
+        self._update_agent_group_neighbors(self.fish, FISH_SENSING_DISTANCE)
+        self._update_agent_group_neighbors(self.predators, PREDATOR_SENSING_DISTANCE)
+        self._update_predator_nearby_fish()
 
     def _update(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit('quit')
+        self._update_neighbors()
         for fish in self.fish:
             fish.update()
         for pred in self.predators:

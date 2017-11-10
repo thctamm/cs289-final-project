@@ -1,11 +1,12 @@
-import random
+import random, math
 from agent import Agent
 from variables import *
 
+MAX_NEIGHBOR_FORCE = abs(math.log(0.05/FISH_DESIRED_DIST))
 class Fish(Agent):
-    def __init__(self, start_loc = None):
+    def __init__(self, sim, start_loc = None):
         random.seed()
-        super().__init__(start_loc)
+        super().__init__(sim, start_loc)
         blue = random.randint(150, 255)
         green = random.randint(0, 100)
         red = random.randint(0, 100)
@@ -18,32 +19,45 @@ class Fish(Agent):
             green = 255
         self.color = (red, green, blue)
 
-    def update(self):
+    def update(self): 
+        total_x_vec = 0
+        total_y_vec = 0
+       
+        if len(self.neighbors) > 0:
+            for neighbor in self.neighbors:
+                x_vec = 0
+                y_vec = 0
+                fish, dist = neighbor 
+                target = self.get_perceived_target_pos(fish.loc)
+                x, y = self.get_vector_to_target(target)
+                if dist < 0.05:
+                    dist = 0.05
+                total_force = FISH_NEIGHBOR_FORCE * math.log(dist/FISH_DESIRED_DIST)/MAX_NEIGHBOR_FORCE
+                total_x_vec += x * total_force
+                total_y_vec += y * total_force
 
-        # randomly adjust speed
-        self.x_speed += (random.random() - 0.5) * 0.1
-        self.y_speed += (random.random() - 0.5) * 0.1
+        else:
+            # randomly adjust speed
+            total_x_vec = (random.random() - 0.5) * 2 * FISH_ACCEL
+            total_y_vec = (random.random() - 0.5) * 2 * FISH_ACCEL
 
-        # normalize
-        speed = self.x_speed + self.y_speed
+
+        # normalize acceleration
+        accel = abs(total_x_vec) + abs(total_y_vec)
+        if accel > FISH_ACCEL:
+            adj = FISH_ACCEL/accel
+            total_x_vec *= adj
+            total_y_vec *= adj
+
+        self.x_speed += total_x_vec
+        self.y_speed += total_y_vec
+
+        # normalize speed
+        speed = abs(self.x_speed) + abs(self.y_speed)
         if speed > FISH_SPEED:
             adj = FISH_SPEED/speed
             self.x_speed *= adj
             self.y_speed *= adj
 
-        new_x = self.loc[0] + self.x_speed
-        new_y = self.loc[1] + self.y_speed
-
-        # wrap around
-        if new_x > WORLD_SIZE[0]:
-            new_x -= WORLD_SIZE[0]
-        elif new_x < 0:
-            new_x += WORLD_SIZE[0]
-        
-        if new_y > WORLD_SIZE[1]:
-            new_y -= WORLD_SIZE[1]
-        elif new_y < 0:
-            new_y += WORLD_SIZE[1]
-
-        self.next_loc = (new_x, new_y)
+        self.move() 
 
