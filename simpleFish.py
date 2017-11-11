@@ -3,6 +3,7 @@ from agent import Agent
 from variables import *
 
 MAX_NEIGHBOR_FORCE = abs(math.log(FISH_SENSING_DISTANCE/FISH_DESIRED_DIST))
+
 class Fish(Agent):
     def __init__(self, sim, start_loc = None):
         random.seed()
@@ -36,7 +37,6 @@ class Fish(Agent):
                 x, y = self.get_vector_to_target(target)
                 if dist > FISH_DESIRED_DIST:
                     total_force = FISH_NEIGHBOR_FORCE * math.log(dist/FISH_DESIRED_DIST)/MAX_NEIGHBOR_FORCE
-                    #total_force =  FISH_NEIGHBOR_FORCE*(dist - FISH_DESIRED_DIST)/(FISH_SENSING_DISTANCE - FISH_DESIRED_DIST)
                 else:
                     total_force = -pow(FISH_DESIRED_DIST-dist, 2)
                 total_x_vec += x * total_force

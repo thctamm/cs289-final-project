@@ -1,7 +1,7 @@
 import time, sys, math, random
 import pygame
 from variables import *
-from fish import Fish
+from simpleFish import Fish
 from predator import Predator
 
 class Simulator():
@@ -28,7 +28,7 @@ class Simulator():
     def _init_predators(self):
         for _ in range(NUM_PREDATORS):
             if START_CLUSTERED:
-                self.predators.append(Predator(self, (WORLD_SIZE[0]/2 + 10, WORLD_SIZE[1]/2)))
+                self.predators.append(Predator(self, (WORLD_SIZE[0]/2 + random.random()*10, WORLD_SIZE[1]/2)))
             else:
                 self.predators.append(Predator(self))
 
