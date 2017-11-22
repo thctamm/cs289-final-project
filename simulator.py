@@ -12,10 +12,12 @@ class Simulator():
         self._init_fish()
         self._init_predators()
         self._init_pygame()
+        self.score = 0
 
     def _init_pygame(self):
         pygame.init()
         self.surface = pygame.display.set_mode((WORLD_SIZE[0]*SQUARE_SIZE, WORLD_SIZE[1]*SQUARE_SIZE))
+        self.font = pygame.font.SysFont(pygame.font.get_default_font(), 30)
         pygame.display.set_caption('289 fish flocking')
 
     def _init_fish(self):
@@ -36,13 +38,15 @@ class Simulator():
         x = int(fish.loc[0] * SQUARE_SIZE)
         y = int(fish.loc[1] * SQUARE_SIZE)
         pygame.draw.circle(self.surface, pygame.Color(*fish.color), (x, y), int(SQUARE_SIZE*FISH_SIZE))
-        return
 
     def _draw_pred(self, pred):
         x = int(pred.loc[0] * SQUARE_SIZE)
         y = int(pred.loc[1] * SQUARE_SIZE)
         pygame.draw.circle(self.surface, pygame.Color(*RED), (x, y), int(SQUARE_SIZE*PREDATOR_SIZE))
-        return
+
+    def _draw_score(self):
+        text_surf = self.font.render('Eaten = {}'.format(self.score), True, (255, 255, 255))
+        self.surface.blit(text_surf, (0, 0))
 
     def _calc_dist(self, a, b):
         x = abs(a.loc[0] - b.loc[0])
@@ -78,7 +82,11 @@ class Simulator():
             pred.nearby_fish = []
             for fish in self.fish:
                 dist = self._calc_dist(pred, fish)
-                if dist <= PREDATOR_SENSING_DISTANCE:
+                if dist <= PREDATOR_EATING_DISTANCE and pred.cooldown == 0:
+                    self.score += 1
+                    pred.cooldown = PREDATOR_EATING_COOLDOWN
+                    self.fish.remove(fish)
+                elif dist <= PREDATOR_SENSING_DISTANCE:
                     pred.nearby_fish.append((fish, dist))
 
     def _update_neighbors(self):
@@ -106,6 +114,7 @@ class Simulator():
         for pred in self.predators:
             pred.flip()
             self._draw_pred(pred)
+        self._draw_score()
         pygame.display.flip()
 
 

@@ -7,6 +7,7 @@ class Predator(Agent):
         random.seed()
         super().__init__(sim, start_loc)
         self.nearby_fish = []
+        self.cooldown = 0
 
     def _get_center_of_mass(self):
         avg_x = 0
@@ -20,7 +21,8 @@ class Predator(Agent):
         return (avg_x/len(self.nearby_fish), avg_y/len(self.nearby_fish))
 
     def update(self):
-        
+        if self.cooldown > 0:
+            self.cooldown -= 1
         if len(self.nearby_fish) > 0:
             # Go for the center of mass
             target = self._get_center_of_mass()
