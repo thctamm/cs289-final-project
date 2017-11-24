@@ -36,12 +36,12 @@ class Fish(Agent):
 
                 target = self.get_perceived_target_pos(pred.loc)
                 x, y = self.get_vector_to_target(target)
-                total_force = -PREDATOR_FISH_FORCE * pow((1.0)/dist, 4)
+                total_force = - PREDATOR_FISH_FORCE * pow((1.0)/dist, 4)
                 total_x_vec += x * total_force
                 total_y_vec += y * total_force
 
         # Compute other effects normally.
-        if len(self.neighbors) > 0:
+        elif len(self.neighbors) > 0:
             neighbors = self.neighbors
             if len(neighbors) > FISH_MAX_NEIGHBORS:
                 neighbors = sorted(self.neighbors, key=lambda x: x[1])
@@ -55,14 +55,15 @@ class Fish(Agent):
                 if dist > FISH_DESIRED_DIST:
                     total_force = FISH_NEIGHBOR_FORCE * math.log(dist/FISH_DESIRED_DIST)/MAX_NEIGHBOR_FORCE
                 else:
-                    total_force = -pow(FISH_DESIRED_DIST-dist, 2)
+                    total_force = -pow(FISH_DESIRED_DIST-dist, 1.5)
                 total_x_vec += x * total_force
                 total_y_vec += y * total_force
+        
         elif len(self.nearby_predators) == 0 and len(self.neighbors) == 0:
             # randomly adjust speed
             total_x_vec = (random.random() - 0.5) * 2 * FISH_ACCEL
             total_y_vec = (random.random() - 0.5) * 2 * FISH_ACCEL
-
+        
 
         # normalize acceleration
         accel = abs(total_x_vec) + abs(total_y_vec)
