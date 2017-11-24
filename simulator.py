@@ -1,7 +1,8 @@
 import time, sys, math, random
 import pygame
 from variables import *
-from simpleFish import Fish
+#from simpleFish import Fish
+from advancedFish import Fish
 from predator import Predator
 
 class Simulator():
@@ -77,6 +78,7 @@ class Simulator():
                         agent_a.neighbors.append((agent_b, dist))
                         agent_b.neighbors.append((agent_a, dist))
 
+    # Compute nearby fish for each predator.
     def _update_predator_nearby_fish(self):
         for pred in self.predators:
             pred.nearby_fish = []
@@ -89,10 +91,20 @@ class Simulator():
                 elif dist <= PREDATOR_SENSING_DISTANCE:
                     pred.nearby_fish.append((fish, dist))
 
+    # Compute nearby predators for each fish.
+    def _update_fish_nearby_predator(self):
+        for fish in self.fish:
+            fish.nearby_predators = []
+            for pred in self.predators:
+                dist = self._calc_dist(pred, fish)
+                if dist <= FISH_SENSING_DISTANCE:
+                    fish.nearby_predators.append((pred, dist))
+
     def _update_neighbors(self):
         self._update_agent_group_neighbors(self.fish, FISH_SENSING_DISTANCE)
         self._update_agent_group_neighbors(self.predators, PREDATOR_SENSING_DISTANCE)
         self._update_predator_nearby_fish()
+        self._update_fish_nearby_predator()
 
     def _update(self):
         for event in pygame.event.get():
