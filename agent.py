@@ -1,4 +1,5 @@
 import random
+import math
 from variables import *
 
 class Agent():
@@ -10,7 +11,7 @@ class Agent():
             self.loc = (random.random() * WORLD_SIZE[0], random.random() * WORLD_SIZE[1])
         self.x_speed = 0
         self.y_speed = 0
-        self.next_loc = self.loc 
+        self.next_loc = self.loc
         self.neighbors = []
         self.sim = sim
 
@@ -30,7 +31,7 @@ class Agent():
         return (x, y)
 
     def get_vector_to_target(self, target):
-        x_vec = target[0] - self.loc[0] 
+        x_vec = target[0] - self.loc[0]
         y_vec = target[1] - self.loc[1]
         tot = abs(x_vec) + abs(y_vec)
         if tot != 0:
@@ -39,7 +40,7 @@ class Agent():
         return (x_vec, y_vec)
 
     def update(self):
-        return 
+        return
 
     def move(self):
         new_x = self.loc[0] + self.x_speed
@@ -50,7 +51,7 @@ class Agent():
             new_x -= WORLD_SIZE[0]
         elif new_x < 0:
             new_x += WORLD_SIZE[0]
-        
+
         if new_y > WORLD_SIZE[1]:
             new_y -= WORLD_SIZE[1]
         elif new_y < 0:
@@ -60,5 +61,3 @@ class Agent():
 
     def flip(self):
         self.loc = self.next_loc
-
-    
