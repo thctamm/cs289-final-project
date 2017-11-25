@@ -18,12 +18,15 @@ class Fish(Agent):
         green += missing//2
         if green > 255:
             green = 255
+        self.nearby_predators = []
+        self.nearby_marked = []
+        self.marked = False
         self.color = (red, green, blue)
 
-    def update(self): 
+    def update(self):
         total_x_vec = 0
         total_y_vec = 0
-       
+
         if len(self.neighbors) > 0:
             neighbors = self.neighbors
             if len(neighbors) > FISH_MAX_NEIGHBORS:
@@ -32,7 +35,7 @@ class Fish(Agent):
             for neighbor in neighbors:
                 x_vec = 0
                 y_vec = 0
-                fish, dist = neighbor 
+                fish, dist = neighbor
                 target = self.get_perceived_target_pos(fish.loc)
                 x, y = self.get_vector_to_target(target)
                 if dist > FISH_DESIRED_DIST:
@@ -66,5 +69,4 @@ class Fish(Agent):
             self.x_speed *= adj
             self.y_speed *= adj
 
-        self.move() 
-
+        self.move()
