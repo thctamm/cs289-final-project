@@ -39,6 +39,16 @@ class Agent():
             y_vec = y_vec/tot
         return (x_vec, y_vec)
 
+    def get_perp_clockwise_vector(self, target):
+        x_vec = target[0]
+        y_vec = target[1]
+        return (-1.0 * y_vec, x_vec)
+
+    def get_perp_counterclockwise_vector(self, target):
+        x_vec = target[0]
+        y_vec = target[1]
+        return (y_vec, -1.0 * x_vec)
+
     def update(self):
         return
 

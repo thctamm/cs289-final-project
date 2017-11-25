@@ -4,6 +4,7 @@ from variables import *
 #from simpleFish import Fish
 #from advancedFish import Fish
 from propagationFish import Fish
+#from circFish import Fish
 from predator import Predator
 
 class Simulator():
