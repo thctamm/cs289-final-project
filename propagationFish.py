@@ -58,10 +58,10 @@ class Fish(Agent):
                 a, dist = fish
                 target = self.get_perceived_target_pos(a.loc)
                 x, y = self.get_vector_to_target(target)
-                total_force = -(1.0)*pow((1.0)/dist, 1)
+                total_force = -(1.0)*pow((1.0)/dist, 0.2)
                 total_x_vec += x * total_force
                 total_y_vec += y * total_force
-            
+
             neighbors = self.neighbors
             if len(neighbors) > FISH_MAX_NEIGHBORS:
                 neighbors = sorted(self.neighbors, key=lambda x: x[1])
@@ -72,8 +72,10 @@ class Fish(Agent):
                 fish, dist = neighbor
                 target = self.get_perceived_target_pos(fish.loc)
                 x, y = self.get_vector_to_target(target)
+                # Made the force between fishes stronger. Maybe change neighbor
+                # force constant in variables.py? 
                 if dist > FISH_DESIRED_DIST:
-                    total_force = FISH_NEIGHBOR_FORCE * math.log(dist/FISH_DESIRED_DIST)/MAX_NEIGHBOR_FORCE
+                    total_force = 10*FISH_NEIGHBOR_FORCE * math.log(dist/FISH_DESIRED_DIST)/MAX_NEIGHBOR_FORCE
                 else:
                     total_force = -pow(FISH_DESIRED_DIST-dist, 1.5)
                 total_x_vec += x * total_force
