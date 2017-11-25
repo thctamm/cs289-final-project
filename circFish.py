@@ -58,9 +58,8 @@ class Fish(Agent):
                 a, dist = fish
                 target = self.get_perceived_target_pos(a.loc)
                 x, y = self.get_vector_to_target(target)
-
-                updated_x, updated_y = self.get_perp_clockwise_vector(target)
-                total_force = (1.0)*pow((1.0)/dist, 2)
+                updated_x, updated_y = self.get_perp_counterclockwise_vector(target)
+                total_force = (1.0)*pow((1.0)/dist, 0.5)
                 total_x_vec += updated_x * total_force
                 total_y_vec += updated_y * total_force
 
