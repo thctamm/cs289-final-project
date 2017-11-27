@@ -108,6 +108,7 @@ class Simulator():
     def _update_fish_nearby_predator(self):
         for fish in self.fish:
             fish.nearby_predators = []
+            fish.marked = False
             for pred in self.predators:
                 dist = self._calc_dist(pred, fish)
                 if dist <= FISH_SENSING_DISTANCE:
