@@ -1,4 +1,4 @@
-import time, sys, math, random
+import time, sys, math, random, csv
 import pygame
 from variables import *
 from simplePredator import SimplePredator
@@ -8,7 +8,7 @@ from circFish import CircFish
 from propagationFish import PropagationFish
 
 class Simulator():
-    def __init__(self, fish_type, predator_type = 's'):
+    def __init__(self, fish_type, predator_type = 's', progress_file = ''):
         if fish_type == 's':
             self.Fish = SimpleFish
         elif fish_type == 'a':
@@ -21,14 +21,20 @@ class Simulator():
         if predator_type == 's':
             self.Predator = SimplePredator
         random.seed()
+        self.score = 0
+        self.ticks = 0
         self.fish = []
         self.predators = []
         self._init_fish()
         self._init_predators()
         if DRAW:
             self._init_pygame()
-        self.score = 0
-        self.ticks = 0
+        if progress_file != '':
+            self.out_file = open(progress_file, 'w+')
+            self.wr = csv.writer(self.out_file)
+            self.wr.writerow(['ticks', 'score'])
+        else:
+            self.wr = None
 
     def _init_pygame(self):
         pygame.init()
@@ -112,6 +118,8 @@ class Simulator():
                 dist = self._calc_dist(pred, fish)
                 if dist <= PREDATOR_EATING_DISTANCE and pred.cooldown == 0:
                     self.score += 1
+                    if self.wr:
+                        self.wr.writerow([self.ticks, self.score])
                     pred.cooldown = PREDATOR_EATING_COOLDOWN
                     self.fish.remove(fish)
                 elif dist <= PREDATOR_SENSING_DISTANCE:
@@ -168,11 +176,11 @@ class Simulator():
         self._draw_score()
         pygame.display.flip()
 
-
     def run(self):
         while True:
             self._update()
             if FREQUENCY > 0:
                 time.sleep(1/FREQUENCY)
             if SCORE_THRESHOLD > 0 and self.score >= SCORE_THRESHOLD:
+                self.out_file.close()
                 return (self.ticks, self.score)

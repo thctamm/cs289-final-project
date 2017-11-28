@@ -12,7 +12,10 @@ def main():
             for fish in ['a', 'p', 'c']:
                 for i in range(10):
                     print('running iteration {} with fish {} and predator {}'.format(i, fish, pred))
-                    sim = Simulator(fish, pred)
+                    if len(sys.argv) > 1 and sys.argv[1] == 'p':
+                        sim = Simulator(fish, pred, '{}_{}_{}_cdf.csv'.format(fish, pred, i))
+                    else:
+                        sim = Simulator(fish, pred)
                     ticks, score = sim.run()
                     wr.writerow([fish, pred, i, ticks, score])
 
