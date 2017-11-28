@@ -1,5 +1,6 @@
 import random
 import math
+import numpy as np
 from variables import *
 
 class Agent():
@@ -48,6 +49,10 @@ class Agent():
         x_vec = target[0]
         y_vec = target[1]
         return (y_vec, -1.0 * x_vec)
+
+    def get_rotated_vector(self, vec, deg):
+        rot_matrix = np.array([[math.cos(deg), -math.sin(deg)],[math.sin(deg), math.cos(deg)]])
+        return rot_matrix.dot(np.array(vec))
 
     def update(self):
         return
