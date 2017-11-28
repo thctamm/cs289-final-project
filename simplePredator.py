@@ -2,7 +2,7 @@ import random
 from agent import Agent
 from variables import *
 
-class Predator(Agent):
+class SimplePredator(Agent):
     def __init__(self, sim, start_loc = None):
         random.seed()
         super().__init__(sim, start_loc)

@@ -9,7 +9,7 @@ MAX_NEIGHBOR_FORCE = abs(math.log(FISH_SENSING_DISTANCE/FISH_DESIRED_DIST))
 # If a marked fish is in a certain PROP_DIST (meaning getting
 # attacked by Predator), then it experiences repulsive force.
 # Smaller repulsive farther from the marked fish it is.
-class Fish(Agent):
+class PropagationFish(Agent):
     def __init__(self, sim, start_loc = None):
         random.seed()
         super().__init__(sim, start_loc)

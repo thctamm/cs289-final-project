@@ -1,21 +1,34 @@
 import time, sys, math, random
 import pygame
 from variables import *
-#from simpleFish import Fish
-#from advancedFish import Fish
-#from propagationFish import Fish
-from circFish import Fish
-from predator import Predator
+from simplePredator import SimplePredator
+from simpleFish import SimpleFish
+from advancedFish import AdvancedFish
+from circFish import CircFish
+from propagationFish import PropagationFish
 
 class Simulator():
-    def __init__(self):
+    def __init__(self, fish_type, predator_type = 's'):
+        if fish_type == 's':
+            self.Fish = SimpleFish
+        elif fish_type == 'a':
+            self.Fish = AdvancedFish
+        elif fish_type == 'p':
+            self.Fish = AdvancedFish
+        else:
+            self.Fish = CircFish
+
+        if predator_type == 's':
+            self.Predator = SimplePredator
         random.seed()
         self.fish = []
         self.predators = []
         self._init_fish()
         self._init_predators()
-        self._init_pygame()
+        if DRAW:
+            self._init_pygame()
         self.score = 0
+        self.ticks = 0
 
     def _init_pygame(self):
         pygame.init()
@@ -26,16 +39,16 @@ class Simulator():
     def _init_fish(self):
         for _ in range(NUM_FISH):
             if START_CLUSTERED:
-                self.fish.append(Fish(self, (WORLD_SIZE[0]/2 + (random.random()-0.5)*5, WORLD_SIZE[1]/2 + (random.random()-0.5)*5)))
+                self.fish.append(self.Fish(self, (WORLD_SIZE[0]/2 + (random.random()-0.5)*5, WORLD_SIZE[1]/2 + (random.random()-0.5)*5)))
             else:
-                self.fish.append(Fish(self))
+                self.fish.append(self.Fish(self))
 
     def _init_predators(self):
         for _ in range(NUM_PREDATORS):
             if START_CLUSTERED:
-                self.predators.append(Predator(self, (WORLD_SIZE[0]/2 + random.random()*10, WORLD_SIZE[1]/2)))
+                self.predators.append(self.Predator(self, (WORLD_SIZE[0]/2 + random.random()*10, WORLD_SIZE[1]/2)))
             else:
-                self.predators.append(Predator(self))
+                self.predators.append(self.Predator(self))
 
     def _draw_fish(self, fish):
         x = int(fish.loc[0] * SQUARE_SIZE)
@@ -123,16 +136,26 @@ class Simulator():
         self._update_nearby_marked(PROPAGATION_SENSING_DISTANCE)
 
     def _update(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit('quit')
+        self.ticks += 1
+        if DRAW:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit('quit')
         self._update_neighbors()
         for fish in self.fish:
             fish.update()
         for pred in self.predators:
             pred.update()
+        if DRAW:
+            self._flip_and_draw() 
+        else:
+            self._flip()
 
-        self._flip_and_draw()
+    def _flip(self):
+        for fish in self.fish:
+            fish.flip()
+        for pred in self.predators:
+            pred.flip()
 
     def _flip_and_draw(self):
         self.surface.fill((0,0,0))
@@ -149,4 +172,7 @@ class Simulator():
     def run(self):
         while True:
             self._update()
-            time.sleep(1/FREQUENCY)
+            if FREQUENCY > 0:
+                time.sleep(1/FREQUENCY)
+            if SCORE_THRESHOLD > 0 and self.score >= SCORE_THRESHOLD:
+                return (self.ticks, self.score)

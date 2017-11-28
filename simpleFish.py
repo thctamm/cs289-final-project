@@ -4,7 +4,7 @@ from variables import *
 
 MAX_NEIGHBOR_FORCE = abs(math.log(FISH_SENSING_DISTANCE/FISH_DESIRED_DIST))
 
-class Fish(Agent):
+class SimpleFish(Agent):
     def __init__(self, sim, start_loc = None):
         random.seed()
         super().__init__(sim, start_loc)
