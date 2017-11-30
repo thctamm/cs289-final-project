@@ -3,6 +3,7 @@ import pygame
 from variables import *
 from simplePredator import SimplePredator
 from probPredator import ProbPredator
+from smartPredator import SmartPredator
 from simpleFish import SimpleFish
 from advancedFish import AdvancedFish
 from circFish import CircFish
@@ -23,6 +24,8 @@ class Simulator():
             self.Predator = SimplePredator
         elif predator_type == 'r':
             self.Predator = ProbPredator
+        elif predator_type == 'm':
+            self.Predator = SmartPredator
         random.seed()
         self.score = 0
         self.ticks = 0
