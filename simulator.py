@@ -2,6 +2,7 @@ import time, sys, math, random, csv
 import pygame
 from variables import *
 from simplePredator import SimplePredator
+from probPredator import ProbPredator
 from simpleFish import SimpleFish
 from advancedFish import AdvancedFish
 from circFish import CircFish
@@ -20,6 +21,8 @@ class Simulator():
 
         if predator_type == 's':
             self.Predator = SimplePredator
+        elif predator_type == 'r':
+            self.Predator = ProbPredator
         random.seed()
         self.score = 0
         self.ticks = 0
@@ -155,7 +158,7 @@ class Simulator():
         for pred in self.predators:
             pred.update()
         if DRAW:
-            self._flip_and_draw() 
+            self._flip_and_draw()
         else:
             self._flip()
 
