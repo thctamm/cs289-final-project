@@ -2,6 +2,7 @@ import random
 from agent import Agent
 from variables import *
 
+## Predator that zig-zags.
 class SmartPredator(Agent):
     def __init__(self, sim, start_loc = None):
         random.seed()
