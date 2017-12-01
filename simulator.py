@@ -4,6 +4,7 @@ from variables import *
 from simplePredator import SimplePredator
 from probPredator import ProbPredator
 from smartPredator import SmartPredator
+from coordPredator import CoordPredator
 from simpleFish import SimpleFish
 from advancedFish import AdvancedFish
 from circFish import CircFish
@@ -26,6 +27,8 @@ class Simulator():
             self.Predator = ProbPredator
         elif predator_type == 'm':
             self.Predator = SmartPredator
+        elif predator_type == 'c':
+            self.Predator = CoordPredator
         random.seed()
         self.score = 0
         self.ticks = 0
@@ -104,6 +107,7 @@ class Simulator():
                     if dist <= sensing_dist:
                         agent_a.neighbors.append((agent_b, dist))
                         agent_b.neighbors.append((agent_a, dist))
+
 
     # Compute nearby marked fish within PROPAGATION_SENSING_DISTANCE.
     def _update_nearby_marked(self, sensing_dist):

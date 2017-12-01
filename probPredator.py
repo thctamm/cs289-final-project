@@ -8,10 +8,11 @@ class ProbPredator(Agent):
         random.seed()
         super().__init__(sim, start_loc)
         self.nearby_fish = []
+        self.nearby_predator = []
         self.cooldown = 0
 
     ## If really close to some fish, pick that fish.
-    ## Otherwise, randomly select fish. 
+    ## Otherwise, randomly select fish.
     def update(self):
         if self.cooldown > 0:
             self.cooldown -= 1

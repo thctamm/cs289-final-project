@@ -7,6 +7,7 @@ class SimplePredator(Agent):
         random.seed()
         super().__init__(sim, start_loc)
         self.nearby_fish = []
+        self.nearby_predator = []
         self.cooldown = 0
 
     def _get_center_of_mass(self):
@@ -26,13 +27,13 @@ class SimplePredator(Agent):
         if len(self.nearby_fish) > 0:
             # Go for the center of mass
             target = self._get_center_of_mass()
-            x_vec, y_vec = self.get_vector_to_target(target) 
+            x_vec, y_vec = self.get_vector_to_target(target)
 
             self.x_speed += x_vec * PREDATOR_ACCEL
             self.y_speed += y_vec * PREDATOR_ACCEL
 
         else:
-            # swim randomly 
+            # swim randomly
             self.x_speed += (random.random() - 0.5) * 2 * PREDATOR_ACCEL
             self.y_speed += (random.random() - 0.5) * 2 * PREDATOR_ACCEL
 
@@ -44,6 +45,3 @@ class SimplePredator(Agent):
             self.y_speed *= adj
 
         self.move()
-
-        
-
