@@ -17,7 +17,7 @@ class Simulator():
         elif fish_type == 'a':
             self.Fish = AdvancedFish
         elif fish_type == 'p':
-            self.Fish = AdvancedFish
+            self.Fish = PropagationFish
         else:
             self.Fish = CircFish
 
