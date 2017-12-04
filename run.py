@@ -7,7 +7,7 @@ def main():
     if len(sys.argv) < 2:
         sim = Simulator('c')
     else:
-        sim = Simulator(sys.argv[1])
+        sim = Simulator(sys.argv[1], sys.argv[2])
     print(sim.run())
 
 if __name__ == "__main__":

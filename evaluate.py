@@ -8,7 +8,7 @@ def main():
     with open('results.csv', 'w+') as out_file:
         wr = csv.writer(out_file)
         wr.writerow(['fish', 'predator', 'iteration', 'ticks', 'score'])
-        for pred in ['s']:
+        for pred in ['s', 'r', 'm', 'c']:
             for fish in ['a', 'p', 'c']:
                 for i in range(10):
                     print('running iteration {} with fish {} and predator {}'.format(i, fish, pred))

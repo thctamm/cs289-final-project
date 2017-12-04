@@ -21,12 +21,12 @@ class ProbPredator(Agent):
 
             fish, dist = nearby_fish[0]
             if dist < PREDATOR_PROB_DISTANCE:
-                x_vec, y_vec = self.get_vector_to_target(dist)
+                x_vec, y_vec = self.get_vector_to_target(fish.loc)
                 self.x_speed += x_vec * PREDATOR_ACCEL
                 self.y_speed += y_vec * PREDATOR_ACCEL
             else:
                 fishIndex = randint(0, len(nearby_fish) - 1)
-                x_vec, y_vec = self.get_vector_to_target(nearby_fish[fishIndex][1])
+                x_vec, y_vec = self.get_vector_to_target(nearby_fish[fishIndex][0].loc)
                 self.x_speed += x_vec * PREDATOR_ACCEL
                 self.y_speed += y_vec * PREDATOR_ACCEL
         else:

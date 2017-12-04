@@ -38,6 +38,7 @@ class Simulator():
         self._init_predators()
         if DRAW:
             self._init_pygame()
+        self.out_file = None
         if progress_file != '':
             self.out_file = open(progress_file, 'w+')
             self.wr = csv.writer(self.out_file)
@@ -192,5 +193,6 @@ class Simulator():
             if FREQUENCY > 0:
                 time.sleep(1/FREQUENCY)
             if SCORE_THRESHOLD > 0 and self.score >= SCORE_THRESHOLD:
-                self.out_file.close()
+                if self.out_file:
+                    self.out_file.close()
                 return (self.ticks, self.score)

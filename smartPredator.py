@@ -1,4 +1,5 @@
 import random
+import math
 from agent import Agent
 from variables import *
 
@@ -29,7 +30,7 @@ class SmartPredator(Agent):
             # Go for the center of mass
             target = self._get_center_of_mass()
             x_vec, y_vec = self.get_vector_to_target(target)
-            new_vec = self.get_rotated_vector((x_vec,y_vec), math.pi/6)
+            new_vec = self.get_rotated_vector((x_vec,y_vec), -math.pi/6)
 
             self.x_speed += new_vec[0] * PREDATOR_ACCEL
             self.y_speed += new_vec[1] * PREDATOR_ACCEL
